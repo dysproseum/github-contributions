@@ -6,7 +6,8 @@ window.addEventListener('load', function() {
   const bad = document.getElementById("bad");
   bad.addEventListener('click', function() {
    var target = document.getElementById(currentDate);
-   target.style.backgroundColor = "#600";
+   target.classList.add("bad");
+   target.classList.remove("good");
 
    localStorage.setItem(currentDate, "bad");
   });
@@ -14,7 +15,8 @@ window.addEventListener('load', function() {
   const good = document.getElementById("good");
   good.addEventListener('click', function() {
    var target = document.getElementById(currentDate);
-   target.style.backgroundColor = "#060";
+   target.classList.add("good");
+   target.classList.remove("bad");
 
    localStorage.setItem(currentDate, "good");
   });
@@ -59,14 +61,16 @@ window.addEventListener('load', function() {
   let curMonth = -1;
   for (let i = 0; i < grid.length; i++) {
     let month;
-    for (let j = 0; j < grid[0].length; j++) {
+    for (let j = grid[0].length; j >= 0; j--) {
       month = new Date(grid[i][j]).getMonth();
     }
     if (curMonth != month) {
       if (curMonth != -1) {
         var th = document.createElement('th');
         th.colSpan = count;
-        th.innerHTML = months[curMonth];
+        if (count > 1) {
+          th.innerHTML = months[curMonth];
+        }
         tr.append(th);
       }
       count = 1;
@@ -94,30 +98,73 @@ window.addEventListener('load', function() {
       var td = document.createElement('td');
       td.id = grid[j][i];
       td.className = "grid";
-      let data = localStorage.getItem(grid[j][i]);
-      if (data) {
-        td.classList.add(data);
+      if (grid[j][i] > currentDate) {
+        td.classList.add("future");
+        continue;
       }
-      var a = document.createElement('a');
-      a.title = grid[j][i];
-      a.innerHTML = '&nbsp;';
-      a.addEventListener('click', function() {
+      td.addEventListener('click', function() {
         let target = document.getElementById(currentDate);
         target.style.outline = "1px solid var(--color-calendar-graph-day-border)";
         currentDate = grid[j][i];
         console.log(currentDate);
         target = document.getElementById(currentDate);
-        target.style.outline = "auto";
+        target.style.outline = "1px solid black";
       });
+      var a = document.createElement('a');
+      a.title = grid[j][i];
+      a.innerHTML = '&nbsp;';
       td.append(a);
       tr.append(td);
+
+      // Retrieve data.
+      let data = localStorage.getItem(grid[j][i]);
+      if (data) {
+        td.classList.add(data);
+      }
     }
     tbody.append(tr);
   }
+  let tfoot = document.createElement('tfoot');
+  var tr = document.createElement('tr');
+  var td = document.createElement('td');
+  tr.append(td);
+
+  // Link.
+  var td = document.createElement('td');
+  td.colSpan = 42;
+  td.innerHTML = '<a href="#" class="muted">Learn how we count contributions</a>';
+  tr.append(td);
+
+  // Legend.
+  var td = document.createElement('td');
+  td.className = "legend";
+  td.colSpan = 11;
+  var span = document.createElement('span');
+  span.innerHTML = 'Good';
+  td.append(span);
+  var div = document.createElement('div');
+  div.className = "grid good";
+  // var a = document.createElement('a');
+  // a.innerHTML = '&nbsp;';
+  // div.append(a);
+  td.append(div);
+
+  var span = document.createElement('span');
+  span.innerHTML = 'Bad';
+  td.append(span);
+  tr.append(td);
+  tfoot.append(tr);
+  var div = document.createElement('div');
+  div.className = "grid bad";
+  // var a = document.createElement('a');
+  // a.innerHTML = '&nbsp;';
+  // div.append(a);
+  td.append(div);
 
   // Append to target element.
   tableElem.append(thead);
   tableElem.append(tbody);
+  tableElem.append(tfoot);
   elem.append(tableElem);
   elem.style.display = 'block';
 
