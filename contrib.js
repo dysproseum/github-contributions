@@ -8,6 +8,20 @@ var GithubContributions = function(options) {
     title: 'Learn how we count contributions',
   };
   link = options && options.link ? options.link : link;
+  let enablePastEntries = options && options.enablePastEntries !== undefined ? options.enablePastEntries : true;
+  let events = {
+    good: {
+      label: 'Good',
+      color: '#9be9a8',
+      value: true,
+    },
+    bad: {
+      label: 'Bad',
+      color: 'palevioletred',
+      value: false,
+    },
+  };
+  events = options && options.events ? options.events : events;
 
   nthNumber = function(number) {
     if (number > 3 && number < 21) return number + "th";
@@ -21,32 +35,37 @@ var GithubContributions = function(options) {
       default:
         return number + "th";
     }
-  }
+  };
+
+  this.track = function(action) {
+    console.log("track " + dataStore + ", " + currentDate + ", " + action);
+    var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
+
+    // @todo account for event types
+    // 1 value gradient: check and increment counter
+
+    // good or bad: true/false/undefined replaces value
+    if (events.good.value == action) {
+      target.style.backgroundColor = events.good.color;
+    }
+    else if (events.bad.value == action) {
+      target.style.backgroundColor = events.bad.color;
+    }
+    else {
+      target.style.backgroundColor = null;
+    }
+    localStorage.setItem(dataStore + currentDate, action);
+    return;
+
+    // good and bad: multiple values per day
+
+  };
 
   const elem = document.getElementById(targetId);
 
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dLabels = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
   let currentDate;
-
-  // Action event listeners.
-  const bad = document.getElementById("bad");
-  bad.addEventListener('click', function() {
-   var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
-   target.classList.add("bad");
-   target.classList.remove("good");
-
-   localStorage.setItem(dataStore + currentDate, "bad");
-  });
-
-  const good = document.getElementById("good");
-  good.addEventListener('click', function() {
-   var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
-   target.classList.add("good");
-   target.classList.remove("bad");
-
-   localStorage.setItem(dataStore + currentDate, "good");
-  });
 
   // Create year array: 52 weeks by 7 days.
   let grid = Array.from(Array(52), () => new Array(7));
@@ -63,6 +82,8 @@ var GithubContributions = function(options) {
   // Get last day of week.
   let curDate = today;
   curDate = new Date(curDate.getTime() + 86400 * 1000 * (6 - n));
+
+  // Add 1 day to prepare for decrementing loop.
   curDate = new Date(curDate.getTime() + 86400 * 1000);
 
   // Fill columns and month labels.
@@ -87,8 +108,10 @@ var GithubContributions = function(options) {
   let curMonth = -1;
   for (let i = 0; i < grid.length; i++) {
     let month;
-    for (let j = grid[0].length; j >= 0; j--) {
-      month = new Date(grid[i][j]).getMonth();
+    for (let j = 0; j < grid[0].length; j++) {
+      let mDate = new Date(grid[i][j]);
+      mDate = new Date(mDate.getTime() - (offset * 60 * 1000));
+      month = mDate.getMonth();
     }
     if (curMonth != month) {
       if (curMonth != -1) {
@@ -108,7 +131,9 @@ var GithubContributions = function(options) {
   }
   var th = document.createElement('th');
   th.colSpan = count;
-  th.innerHTML = months[curMonth];
+  if (count > 1) {
+    th.innerHTML = months[curMonth];
+  }
   tr.append(th);
   thead.append(tr);
 
@@ -129,14 +154,16 @@ var GithubContributions = function(options) {
         continue;
       }
 
-      td.addEventListener('click', function() {
-        var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
-        target.style.outline = "1px solid var(--color-calendar-graph-day-border)";
-        currentDate = grid[j][i];
-        console.log(currentDate);
-        var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
-        target.style.outline = "1px solid black";
-      });
+      if (enablePastEntries) {
+        td.addEventListener('click', function() {
+          var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
+          target.style.outline = "1px solid var(--color-calendar-graph-day-border)";
+          currentDate = grid[j][i];
+          console.log(currentDate);
+          var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
+          target.style.outline = "1px solid black";
+        });
+      }
 
       var a = document.createElement('a');
       a.title = grid[j][i];
@@ -147,7 +174,13 @@ var GithubContributions = function(options) {
       // Retrieve data.
       let data = localStorage.getItem(dataStore + grid[j][i]);
       if (data) {
-        td.classList.add(data);
+        // If boolean events
+        if (data === String(events.good.value)) {
+          td.style.backgroundColor = events.good.color;
+        }
+        else if (data == String(events.bad.value)) {
+          td.style.backgroundColor = events.bad.color;
+        }
       }
 
       // Tooltip.
@@ -188,19 +221,22 @@ var GithubContributions = function(options) {
   td.className = "legend";
   td.colSpan = 11;
 
-  var span = document.createElement('span');
-  span.innerHTML = 'Good';
-  td.append(span);
-  var div = document.createElement('div');
-  div.className = "grid good";
-  td.append(div);
+  // Single gradient event
 
-  var span = document.createElement('span');
-  span.innerHTML = 'Bad';
-  td.append(span);
-  var div = document.createElement('div');
-  div.className = "grid bad";
-  td.append(div);
+  // If boolean events
+  for (event in events) {
+    console.log(events[event]);
+    var span = document.createElement('span');
+    span.innerHTML = events[event].label;
+    td.append(span);
+    var div = document.createElement('div');
+    // div.className = "grid " + events[event].value;
+    div.className = "grid";
+    div.style.backgroundColor = events[event].color;
+    td.append(div);
+  };
+
+  // Multiple value events
 
   tr.append(td);
   tfoot.append(tr);

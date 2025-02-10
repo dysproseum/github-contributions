@@ -4,7 +4,6 @@
   --color-calendar-graph-day-border: rgba(27, 31, 35, 0.06);
   --color-fg-default: black;
   --color-border-default: #d1d9e0;
-  --color-calendar-graph-day-L1-bg: #9be9a8;
   --fgColor-muted: #59636e;
   --fgColor-accent: #0969da;
 }
@@ -36,14 +35,6 @@
 
 .github-contrib td {
   width: 10px;
-}
-
-.github-contrib .bad {
-  background-color: darkred !important;
-}
-
-.github-contrib .good {
-  background-color: var(--color-calendar-graph-day-L1-bg) !important;
 }
 
 .github-contrib td.label {
