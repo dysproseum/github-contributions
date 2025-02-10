@@ -9,44 +9,44 @@
   --fgColor-accent: #0969da;
 }
 
-#github-contrib {
+.github-contrib {
   display: none;
   line-height: 12px;
   margin: 10px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
-#github-contrib table {
+.github-contrib table {
   padding: 10px;
   border-radius: 2px;
   outline: 1px solid var(--color-border-default);
   outline-offset: -1px;
 }
 
-#github-contrib th {
+.github-contrib th {
   font-size: 12px;
   font-weight: normal;
   padding-bottom: 4px;
   padding-top: 10px;
 }
 
-#github-contrib tr {
+.github-contrib tr {
   line-height: 10px;
 }
 
-#github-contrib td {
+.github-contrib td {
   width: 10px;
 }
 
-#github-contrib .bad {
+.github-contrib .bad {
   background-color: darkred !important;
 }
 
-#github-contrib .good {
+.github-contrib .good {
   background-color: var(--color-calendar-graph-day-L1-bg) !important;
 }
 
-#github-contrib td.label {
+.github-contrib td.label {
   padding-right: 4px;
   font-size: 12px;
   font-weight: var(--base-text-weight-normal, 400);
@@ -55,7 +55,7 @@
   fill: var(--fgColor-default, var(--color-fg-default));
 }
 
-#github-contrib .grid {
+.github-contrib .grid {
   fill: var(--color-calendar-graph-day-bg);
   shape-rendering: geometricPrecision;
   background-color: var(--color-calendar-graph-day-bg);
@@ -66,36 +66,45 @@
   user-select: none;
 }
 
-#github-contrib td a {
-  display: block;
-  width: 100%;
+.github-contrib td a {
   font-size: 10px;
 }
 
-#github-contrib tfoot tr td {
+.github-contrib tfoot tr td {
   padding-top: 10px;
 }
 
-#github-contrib tfoot, #github-contrib  a.muted {
+.github-contrib tfoot, .github-contrib  a.muted {
   color: var(--fgColor-muted);
   text-decoration: none;
   font-size: 12px;
 }
 
-#github-contrib tfoot a.muted:hover {
+.github-contrib tfoot a.muted:hover {
   color: var(--fgColor-accent);
 }
 
-#github-contrib .legend span {
+.github-contrib .legend span {
   display: block;
 }
 
-#github-contrib .legend .grid {
+.github-contrib .legend .grid {
   width: 12px;
   height: 12px;
 }
 
-#github-contrib .legend .grid, #github-contrib .legend span {
+.github-contrib .legend .grid, .github-contrib .legend span {
   float: left;
   margin-right: 5px;
+}
+
+.github-contrib #github-contrib-tooltip {
+  position: absolute;
+  background: black;
+  color: white;
+  padding: 4px;
+  margin-top: -12px;
+  border-radius: 4px;
+  font-size: 12px;
+  transform: translateY(-100%);
 }

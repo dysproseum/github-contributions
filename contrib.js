@@ -1,24 +1,51 @@
-window.addEventListener('load', function() {
+var GithubContributions = function(options) {
+
+  console.log({options});
+  const targetId = options && options.targetId ? options.targetId : 'github-contrib';
+  const dataStore = options && options.localStoragePrefix ? options.localStoragePrefix : '';
+  let link = {
+    url: 'https://github.com/dysproseum/github-contributions',
+    title: 'Learn how we count contributions',
+  };
+  link = options && options.link ? options.link : link;
+
+  nthNumber = function(number) {
+    if (number > 3 && number < 21) return number + "th";
+    switch (number % 10) {
+      case 1:
+        return number + "st";
+      case 2:
+        return number + "nd";
+      case 3:
+        return number + "rd";
+      default:
+        return number + "th";
+    }
+  }
+
+  const elem = document.getElementById(targetId);
+
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dLabels = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
   let currentDate;
 
+  // Action event listeners.
   const bad = document.getElementById("bad");
   bad.addEventListener('click', function() {
-   var target = document.getElementById(currentDate);
+   var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
    target.classList.add("bad");
    target.classList.remove("good");
 
-   localStorage.setItem(currentDate, "bad");
+   localStorage.setItem(dataStore + currentDate, "bad");
   });
 
   const good = document.getElementById("good");
   good.addEventListener('click', function() {
-   var target = document.getElementById(currentDate);
+   var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
    target.classList.add("good");
    target.classList.remove("bad");
 
-   localStorage.setItem(currentDate, "good");
+   localStorage.setItem(dataStore + currentDate, "good");
   });
 
   // Create year array: 52 weeks by 7 days.
@@ -49,7 +76,6 @@ window.addEventListener('load', function() {
   }
 
   // Create html.
-  const elem = document.getElementById("github-contrib");
   var tableElem = document.createElement('table');
   var thead = document.createElement('thead');
   var tr = document.createElement('tr');
@@ -96,20 +122,22 @@ window.addEventListener('load', function() {
     tr.append(td);
     for (let j = 0; j < grid.length; j++) {
       var td = document.createElement('td');
-      td.id = grid[j][i];
+      td.setAttribute('data-date', grid[j][i]);
       td.className = "grid";
       if (grid[j][i] > currentDate) {
         td.classList.add("future");
         continue;
       }
+
       td.addEventListener('click', function() {
-        let target = document.getElementById(currentDate);
+        var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
         target.style.outline = "1px solid var(--color-calendar-graph-day-border)";
         currentDate = grid[j][i];
         console.log(currentDate);
-        target = document.getElementById(currentDate);
+        var target = document.querySelector('#' + targetId + ' [data-date="' + currentDate + '"]');
         target.style.outline = "1px solid black";
       });
+
       var a = document.createElement('a');
       a.title = grid[j][i];
       a.innerHTML = '&nbsp;';
@@ -117,10 +145,25 @@ window.addEventListener('load', function() {
       tr.append(td);
 
       // Retrieve data.
-      let data = localStorage.getItem(grid[j][i]);
+      let data = localStorage.getItem(dataStore + grid[j][i]);
       if (data) {
         td.classList.add(data);
       }
+
+      // Tooltip.
+      td.addEventListener('mouseenter', function() {
+        var div = document.createElement('div');
+        div.id = "github-contrib-tooltip";
+        var date = new Date(grid[j][i] + "T12:00:00");
+        date = new Date(date.getTime() - (offset*60*1000));
+        div.innerHTML = data ? "1" : "No";
+        div.innerHTML += " events on " + date.toLocaleString('default', { month: 'long' }) + " " + nthNumber(date.getDate());
+        this.append(div);
+      });
+      td.addEventListener('mouseleave', function() {
+        var div = document.getElementById("github-contrib-tooltip");
+        div.remove();
+      });
     }
     tbody.append(tr);
   }
@@ -132,34 +175,35 @@ window.addEventListener('load', function() {
   // Link.
   var td = document.createElement('td');
   td.colSpan = 42;
-  td.innerHTML = '<a href="#" class="muted">Learn how we count contributions</a>';
+  var a = document.createElement('a');
+  a.className = "muted";
+  a.href=link.url;
+  a.innerHTML = link.title;
+  a.target = link.target ? link.target : '';
+  td.append(a);
   tr.append(td);
 
   // Legend.
   var td = document.createElement('td');
   td.className = "legend";
   td.colSpan = 11;
+
   var span = document.createElement('span');
   span.innerHTML = 'Good';
   td.append(span);
   var div = document.createElement('div');
   div.className = "grid good";
-  // var a = document.createElement('a');
-  // a.innerHTML = '&nbsp;';
-  // div.append(a);
   td.append(div);
 
   var span = document.createElement('span');
   span.innerHTML = 'Bad';
   td.append(span);
-  tr.append(td);
-  tfoot.append(tr);
   var div = document.createElement('div');
   div.className = "grid bad";
-  // var a = document.createElement('a');
-  // a.innerHTML = '&nbsp;';
-  // div.append(a);
   td.append(div);
+
+  tr.append(td);
+  tfoot.append(tr);
 
   // Append to target element.
   tableElem.append(thead);
@@ -167,5 +211,4 @@ window.addEventListener('load', function() {
   tableElem.append(tfoot);
   elem.append(tableElem);
   elem.style.display = 'block';
-
-});
+};
