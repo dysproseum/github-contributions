@@ -115,15 +115,15 @@ events: {
     <code><b>targetId</b></code> <code>string</code>
   </summary>
 
-  Possible values: `"boolean"` or `"gradient"`
+Specify the target ID in the DOM to which the component will be bound.
 
-  Default: `"boolean`"
+Required when embedding more than one graph on a page.
 
 </details>
 
 <details>
   <summary>
-    <code><b>title</b> <code>string</code>
+    <code><b>title</b></code> <code>string</code>
   </summary>
 
   Example: `"% events logged in the past year"`
@@ -176,7 +176,7 @@ Examples: `data-`, `graph1-`, `graph2-`
     <code><b>remoteStorageUrl</b></code> <code>string</code>
   </summary>
 
-Specifies the graph will load data from a URL instead of localStorage. The endpoint must return a JSON response with `YYYY-MM-DD` formatted dates as keys and values corresponding to the graph type.
+Specifies the graph will load data from a URL instead of localStorage. The endpoint must return a JSON response with a `data` object containing `YYYY-MM-DD` formatted dates as keys and values corresponding to the graph type.
 
 Example:
 
