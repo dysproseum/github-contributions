@@ -151,7 +151,7 @@ Required when embedding more than one graph on a page.
 
 <details>
   <summary>
-    <code><b>enablePastEntries</b> <code>boolean</code>
+    <code><b>enablePastEntries</b></code> <code>boolean</code>
   </summary>
 
 Possible values: `true` or `false`
