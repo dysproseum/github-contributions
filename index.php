@@ -41,24 +41,50 @@
     localStoragePrefix: 'gradient-',
   };
 
-  const remoteOptions = {
+  const remoteGradientOptions = {
     eventType: 'gradient',
-    targetId: 'github-remote',
+    targetId: 'github-remote-gradient',
     title: '% remote API events in the past year',
     link: {
       title: 'See the API format for this data',
-      url: 'https://dysproseum.com/github-contributions/endpoint.php',
+      url: 'https://dysproseum.com/github-contributions/endpoint.php?eventType=gradient',
       target: '_blank',
     },
     enablePastEntries: false,
-    remoteStorageUrl: 'https://dysproseum.com/github-contributions/endpoint.php',
+    remoteStorageUrl: 'https://dysproseum.com/github-contributions/endpoint.php?eventType=gradient',
+  };
+
+  const remoteBooleanOptions = {
+    eventType: 'boolean',
+    targetId: 'github-remote-boolean',
+    title: '% games in the past year',
+    link: {
+      title: 'See the API format for this data',
+      url: 'https://dysproseum.com/github-contributions/endpoint.php?eventType=boolean',
+      target: '_blank',
+    },
+    enablePastEntries: false,
+    remoteStorageUrl: 'https://dysproseum.com/github-contributions/endpoint.php?eventType=boolean',
+    events: {
+      'good': {
+        label: 'Home',
+        color: 'lightsteelblue',
+        value: true,
+      },
+      'bad': {
+        label: 'Away',
+        color: 'orange',
+        value: false,
+      },
+    },
   };
 
   window.addEventListener('load', function() {
     const contrib = new GithubContributions;
     const custom = new GithubContributions(options);
     let gradient = new GithubContributions(gradientOptions);
-    const remote = new GithubContributions(remoteOptions);
+    const remoteGradient = new GithubContributions(remoteGradientOptions);
+    const remoteBoolean = new GithubContributions(remoteBooleanOptions);
 
     // Default event listeners.
     document.getElementById('good').addEventListener('click', function() {
@@ -115,8 +141,11 @@
   <!-- actions -->
   <button id="gradient-log">Log workout</button>
 
-  <!-- remote element -->
-  <div class="github-contrib" id="github-remote"></div>
+  <!-- remote gradient element -->
+  <div class="github-contrib" id="github-remote-gradient"></div>
+
+  <!-- remote boolean element -->
+  <div class="github-contrib" id="github-remote-boolean"></div>
 
 </body>
 </html>

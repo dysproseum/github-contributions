@@ -187,6 +187,9 @@ const GithubContributions = function(options) {
         let data;
         if (remoteData) {
           let index = grid[j][i];
+          if (remoteData[index] == undefined) {
+            continue;
+          }
           data = parseInt(remoteData[index]);
         }
         else {
@@ -242,11 +245,13 @@ const GithubContributions = function(options) {
       let data;
       if (remoteData) {
         let index = grid[j][i];
-        data = remoteData[index];
+        if (remoteData[index] == undefined) {
+          continue;
+        }
+        data = remoteData[index].toString();
       }
       else  {
         data = localStorage.getItem(dataStore + grid[j][i]);
-
       }
 
       if (data) {
@@ -277,7 +282,7 @@ const GithubContributions = function(options) {
         }
         else {
           // If boolean events
-          if (data === String(events.good.value)) {
+          if (data == String(events.good.value)) {
             td.style.backgroundColor = events.good.color;
             eventCount++;
           }
