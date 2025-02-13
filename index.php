@@ -41,10 +41,24 @@
     localStoragePrefix: 'gradient-',
   };
 
+  const remoteOptions = {
+    eventType: 'gradient',
+    targetId: 'github-remote',
+    title: '% remote API events in the past year',
+    link: {
+      title: 'See the API format for this data',
+      url: 'https://dysproseum.com/github-contributions/endpoint.php',
+      target: '_blank',
+    },
+    enablePastEntries: false,
+    remoteStorageUrl: 'https://dysproseum.com/github-contributions/endpoint.php',
+  };
+
   window.addEventListener('load', function() {
     const contrib = new GithubContributions;
     const custom = new GithubContributions(options);
     let gradient = new GithubContributions(gradientOptions);
+    const remote = new GithubContributions(remoteOptions);
 
     // Default event listeners.
     document.getElementById('good').addEventListener('click', function() {
@@ -100,6 +114,9 @@
 
   <!-- actions -->
   <button id="gradient-log">Log workout</button>
+
+  <!-- remote element -->
+  <div class="github-contrib" id="github-remote"></div>
 
 </body>
 </html>

@@ -2,6 +2,7 @@ const GithubContributions = function(options) {
 
   const targetId = options && options.targetId ? options.targetId : 'github-contrib';
   const dataStore = options && options.localStoragePrefix ? options.localStoragePrefix : '';
+  const remoteUrl = options && options.remoteStorageUrl ? options.remoteStorageUrl : undefined;
   let title = options && options.title ? options.title : '% contributions in the past year';
   let link = {
     url: 'https://github.com/dysproseum/github-contributions',
@@ -163,13 +164,34 @@ const GithubContributions = function(options) {
   tr.append(th);
   thead.append(tr);
 
+  // Fetch remote data.
+  let remoteData = undefined;
+  if (remoteUrl) {
+    const request = new XMLHttpRequest();
+    // `false` makes the request synchronous
+    request.open("GET", remoteUrl, false);
+    request.send(null);
+
+    if (request.status === 200) {
+      let json = JSON.parse(request.responseText);
+      remoteData = json.data;
+    }
+  }
+
   // Compute max for gradient.
   let max = 0;
   let values = [];
   if (eventType == "gradient") {
     for (let i = 0; i < grid[0].length; i++) {
       for (let j = 0; j < grid.length; j++) {
-        let data = parseInt(localStorage.getItem(dataStore + grid[j][i]));
+        let data;
+        if (remoteData) {
+          let index = grid[j][i];
+          data = parseInt(remoteData[index]);
+        }
+        else {
+          data = parseInt(localStorage.getItem(dataStore + grid[j][i]));
+        }
         if (data) {
           if (data > max) {
             max = data;
@@ -217,7 +239,16 @@ const GithubContributions = function(options) {
       tr.append(td);
 
       // Retrieve data.
-      let data = localStorage.getItem(dataStore + grid[j][i]);
+      let data;
+      if (remoteData) {
+        let index = grid[j][i];
+        data = remoteData[index];
+      }
+      else  {
+        data = localStorage.getItem(dataStore + grid[j][i]);
+
+      }
+
       if (data) {
         if (eventType == 'gradient') {
           eventCount += parseInt(data);
