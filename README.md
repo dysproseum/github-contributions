@@ -46,16 +46,13 @@ let custom = new GithubContributions(options);
 
 ### Data storage
 
-The data is stored in the browser's localStorage, so it will be unique for each user. This can be used for tracking personal goals or tasks.
+By default the data is stored and read from the browser's localStorage, so it will be unique for each user. This can be used for tracking personal goals or tasks.
 
-Make sure to specify a unique `localStoragePrefix` in the options for each graph embedded on a page:
+* Make sure to specify a unique `localStoragePrefix` in the options for each graph embedded on a page.
 
-````
-localStoragePrefix: 'data-',
-````
+The data can also be pulled from a specified API endpoint, so the graph can be shared on a public dashboard.
 
-Future plans include pulling the data from a specified API endpoint, so the data can be shared on a public dashboard.
-
+* Set the `remoteStorageUrl` value in the options and review the sample endpoint for the desired JSON format.
 
 ### Tracking events
 
@@ -73,7 +70,28 @@ contrib->track(false);
 contrib->track(null);
 ````
 
-The label for each corresponding event can be set in `options.events`, along with an RGB or hex color code:
+
+The tracking call returns a promise you can use to refresh the display, or perform any additional follow-up tasks.
+
+### Additional options
+
+<details>
+  <summary>
+    <code><b>eventType</b></code> <code>string</code>
+  </summary>
+
+  Possible values: `"boolean"` (default) or `"gradient"`
+
+  Specifies the graph type and expected data format. Boolean graphs deal with `true` or `false` values, while gradient graphs use integers.
+
+</details>
+
+<details>
+  <summary>
+    <code><b>events</b></code> <code>object</code>
+  </summary>
+
+For boolean graphs, the label for each corresponding event can be set along with an HTML or RGB hex color code.
 
 ````
 events: {
@@ -90,37 +108,89 @@ events: {
 }
 ````
 
-The tracking call returns a promise you can use to refresh the display, or perform any additional follow-up tasks.
+</details>
 
-### Additional options
+<details>
+  <summary>
+    <code><b>targetId</b></code> <code>string</code>
+  </summary>
 
-`eventType`
+  Possible values: `"boolean"` or `"gradient"`
 
-Possible values: `"boolean"` or `"gradient"`
+  Default: `"boolean`"
 
-`title`
+</details>
 
-Example: `"% events logged in the past year"`
+<details>
+  <summary>
+    <code><b>title</b> <code>string</code>
+  </summary>
 
-The `%` character will be replaced with the total count of events.
+  Example: `"% events logged in the past year"`
 
-`link`
+  The `%` character will be replaced with the total count of events.
 
-Override the "Learn more" link with an object in the following format; the `target` parameter is optional: 
+</details>
 
-````
-{
-  url: "https://www.google.com/",
-  title: "Google",
-  target: "_blank",
-}
-````
+<details>
+  <summary>
+    <code><b>link</b></code> <code>Object</code>
+  </summary>
 
-`enablePastEntries` 
+  Override the "Learn more" link with an object in the following format; the `target` parameter is optional: 
+
+  ````
+  {
+    url: "https://www.google.com/",
+    title: "Google",
+    target: "_blank",
+  }
+  ````
+
+</details>
+
+<details>
+  <summary>
+    <code><b>enablePastEntries</b> <code>boolean</code>
+  </summary>
 
 Possible values: `true` or `false`
 
 By default, events can only be tracked to the current day. However, if the `enablePastEntries` option is set, previous dates can be selected to update.
+
+</details>
+
+<details>
+  <summary>
+    <code><b>localStoragePrefix</b></code> <code>string</code>
+  </summary>
+
+Specifies a string to prepend to date keys. Use a different value for each graph.
+
+Examples: `data-`, `graph1-`, `graph2-`
+
+</details>
+
+<details>
+  <summary>
+    <code><b>remoteStorageUrl</b></code> <code>string</code>
+  </summary>
+
+Specifies the graph will load data from a URL instead of localStorage. The endpoint must return a JSON response with `YYYY-MM-DD` formatted dates as keys and values corresponding to the graph type.
+
+Example:
+
+````
+{
+    "data": {
+        "2025-02-12": true,
+        "2025-02-10": false,
+        "2025-02-09": true,
+...
+}
+````
+
+</details>
 
 ## Demo
 
