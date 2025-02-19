@@ -15,7 +15,7 @@ Data can be displayed in two ways:
 
 Include the CSS and script tag in the html header:
 
-````
+```html
 <link rel="stylesheet"
   href="https://raw.githubusercontent.com/dysproseum/github-contributions/refs/heads/main/contrib.css" />
 <script type="text/javascript"
@@ -25,7 +25,7 @@ Include the CSS and script tag in the html header:
 
 By default, the component will bind to an element with id `github-contrib`. Also add the `github-contrib` class to set the styling:
 
-````
+```html
 <div id="github-contrib" class="github-contrib">
 ````
 
@@ -33,13 +33,15 @@ By passing `options` you can set the graph style, customize colors, event series
 
 When embedding more than one graph on a page, make sure to specify a unique `targetId` attribute in the options:
 
-````
+```javascript
 const options = {
   'targetId' => 'github-custom',
 };
 let contrib = new GithubContributions(); // Defaults for demonstration
 let custom = new GithubContributions(options);
-...
+```
+
+```html
 <div id="github-contrib" class="github-contrib">
 <div id="github-custom" class="github-contrib">
 ````
@@ -58,13 +60,13 @@ The data can also be pulled from a specified API endpoint, so the graph can be s
 
 For gradient graphs, events can be logged by calling the `track` method, which will increment the stored value:
 
-````
+```javascript
 contrib->track();
 ````
 
 For boolean graphs, pass in `true` or `false` corresponding to the chosen event, or pass in null to reset:
 
-````
+```javascript
 contrib->track(true);
 contrib->track(false);
 contrib->track(null);
@@ -93,7 +95,7 @@ The tracking call returns a promise you can use to refresh the display, or perfo
 
 For boolean graphs, the label for each corresponding event can be set along with an HTML or RGB hex color code.
 
-````
+```javascript
 events: {
   'good': {
     label: 'Yes',
@@ -139,8 +141,8 @@ Required when embedding more than one graph on a page.
 
   Override the "Learn more" link with an object in the following format; the `target` parameter is optional: 
 
-  ````
-  {
+  ```javascript
+  link: {
     url: "https://www.google.com/",
     title: "Google",
     target: "_blank",
@@ -176,11 +178,15 @@ Examples: `data-`, `graph1-`, `graph2-`
     <code><b>remoteStorageUrl</b></code> <code>string</code>
   </summary>
 
-Specifies the graph will load data from a URL instead of localStorage. The endpoint must return a JSON response with a `data` object containing `YYYY-MM-DD` formatted dates as keys and values corresponding to the graph type.
+Specifies the URL to load data from instead of localStorage. The endpoint must return a JSON response with a `data` object containing `YYYY-MM-DD` formatted dates as keys and values corresponding to the graph type.
+
+```javascript
+remoteStorageUrl: "https://www.example.com/api/endpoint.json",
+```
 
 Example:
 
-````
+```javascript
 {
     "data": {
         "2025-02-12": true,
