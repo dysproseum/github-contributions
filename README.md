@@ -4,7 +4,11 @@ This project can be used to track custom events and visualize them in a familiar
   <img src="assets/github-contributions.png" />
 </p>
 
-### Overview
+### Demo
+
+See working demos here: [https://dysproseum.com/github-contributions](https://dysproseum.com/github-contributions)
+
+## Overview
 
 Data can be displayed in two ways:
 
@@ -46,16 +50,6 @@ let custom = new GithubContributions(options);
 <div id="github-custom" class="github-contrib">
 ````
 
-### Data storage
-
-By default the data is stored and read from the browser's localStorage, so it will be unique for each user. This can be used for tracking personal goals or tasks.
-
-* Make sure to specify a unique `localStoragePrefix` in the options for each graph embedded on a page.
-
-The data can also be pulled from a specified API endpoint, so the graph can be shared on a public dashboard.
-
-* Set the `remoteStorageUrl` value in the options and review the sample endpoint for the desired JSON format.
-
 ### Tracking events
 
 For gradient graphs, events can be logged by calling the `track` method, which will increment the stored value:
@@ -72,10 +66,24 @@ contrib->track(false);
 contrib->track(null);
 ````
 
-
 The tracking call returns a promise you can use to refresh the display, or perform any additional follow-up tasks.
 
-### Additional options
+### Data storage
+
+By default the data is stored and read from the browser's localStorage, so it will be unique for each user. This can be used for tracking personal goals or tasks.
+
+* Make sure to specify a unique `localStoragePrefix` in the options for each graph embedded on a page.
+
+The data can also be pulled from a specified API endpoint, so the graph can be shared on a public dashboard.
+
+* Set the `remoteStorageUrl` value in the options and review the sample endpoints for the desired JSON format.
+
+Sample endpoints: 
+
+  * [Gradient](https://dysproseum.com/github-contributions/endpoint.php?eventType=gradient)
+  * [Boolean](https://dysproseum.com/github-contributions/endpoint.php?eventType=boolean)
+
+## Documentation for `options` properties
 
 <details>
   <summary>
@@ -197,7 +205,3 @@ Example:
 ````
 
 </details>
-
-## Demo
-
-See a working demo here: [https://dysproseum.com/github-contributions](https://dysproseum.com/github-contributions)
